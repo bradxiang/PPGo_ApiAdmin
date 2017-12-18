@@ -51,7 +51,7 @@ func (a *ApiParam) Update(fields ...string) error {
 }
 
 func (a *ApiParam) Delete(id int64, update_id int) (int64, error) {
-	sql := "UPDATE pp_api_param SET status=0,update_id=?,update_time=? WHERE detail_id=?"
+	sql := "UPDATE s_api_param SET status=0,update_id=?,update_time=? WHERE detail_id=?"
 	res, err := orm.NewOrm().Raw(sql, update_id, time.Now().Unix(), id).Exec()
 	if err == nil {
 		num, _ := res.RowsAffected()

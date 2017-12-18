@@ -65,10 +65,10 @@ func AdminGetList(page, pageSize int, filters ...interface{}) ([]*Admin, int64) 
 		}
 	}
 	if realName == "" {
-		sql = "SELECT * FROM pp_uc_admin ORDER BY id DESC LIMIT ?,?"
+		sql = "SELECT * FROM s_uc_admin ORDER BY id DESC LIMIT ?,?"
 		total, _ = query.Raw(sql, strconv.Itoa(offset), strconv.Itoa(pageSize)).QueryRows(&list)
 	} else {
-		sql = "SELECT * FROM pp_uc_admin WHERE real_name like ?  ORDER BY id DESC LIMIT ?,?"
+		sql = "SELECT * FROM s_uc_admin WHERE real_name like ?  ORDER BY id DESC LIMIT ?,?"
 		total, _ = query.Raw(sql, "%"+realName+"%", strconv.Itoa(offset), strconv.Itoa(pageSize)).QueryRows(&list)
 	}
 	return list, total

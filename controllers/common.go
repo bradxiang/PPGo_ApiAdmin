@@ -12,8 +12,8 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego"
-	"github.com/george518/PPGo_ApiAdmin/libs"
-	"github.com/george518/PPGo_ApiAdmin/models"
+	"github.com/api-admin/libs"
+	"github.com/api-admin/models"  
 )
 
 const (

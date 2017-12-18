@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/george518/PPGo_ApiAdmin/controllers"
+	"github.com/api-admin/controllers"
 )
 
 func init() {
@@ -25,5 +25,8 @@ func init() {
 	beego.AutoRouter(&controllers.RoleController{})
 	beego.AutoRouter(&controllers.AdminController{})
 	beego.AutoRouter(&controllers.UserController{})
+	beego.AutoRouter(&controllers.PythonApiController{})
+	beego.AutoRouter(&controllers.GoApiController{})
+	// beego.Include(&controllers.GoApiController{})
 
 }

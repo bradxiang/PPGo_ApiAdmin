@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/george518/PPGo_ApiAdmin/models"
+	"github.com/api-admin/models"
 )
 
 type AuthController struct {

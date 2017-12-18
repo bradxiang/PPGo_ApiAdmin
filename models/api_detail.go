@@ -72,7 +72,7 @@ func ApiDetailGetById(id int) (*ApiDetail, error) {
 
 func ApiDetailsGetById(id int) ([]*ApiDetails, error) {
 	list := make([]*ApiDetails, 0)
-	sql := "SELECT pp_api_detail.*,a.real_name as create_name,b.real_name as update_name,c.real_name as audit_name FROM pp_api_detail LEFT JOIN pp_uc_admin as a ON pp_api_detail.create_id=a.id LEFT JOIN pp_uc_admin as b ON pp_api_detail.update_id=b.id LEFT JOIN pp_uc_admin as c ON pp_api_detail.audit_id=c.id WHERE pp_api_detail.source_id=?"
+	sql := "SELECT s_api_detail.*,a.real_name as create_name,b.real_name as update_name,c.real_name as audit_name FROM s_api_detail LEFT JOIN s_uc_admin as a ON s_api_detail.create_id=a.id LEFT JOIN s_uc_admin as b ON s_api_detail.update_id=b.id LEFT JOIN s_uc_admin as c ON s_api_detail.audit_id=c.id WHERE s_api_detail.source_id=?"
 	orm.NewOrm().Raw(sql, id).QueryRows(&list)
 	fmt.Println(list)
 	return list, nil
