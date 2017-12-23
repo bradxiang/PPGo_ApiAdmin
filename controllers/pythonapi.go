@@ -23,3 +23,7 @@ type PythonApiController struct {
 func (self *PythonApiController) List() {
 	self.display()
 }
+
+func (self *PythonApiController) ApKpi() {
+	self.display()
+}

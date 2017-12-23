@@ -1,0 +1,91 @@
+<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+    <legend>上传xlsx格式的ap-kpi数据</legend>
+</fieldset>
+
+<div class="layui-upload-drag" id="uploadexcel">
+    <i class="layui-icon"></i>
+    <p>点击上传，或将文件拖拽到此处</p>
+</div>
+<div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="demo" style="margin-top: 20px; margin-bottom: 0;">
+    <div class="layui-progress-bar layui-bg-red" lay-percent="0%"></div>
+</div>
+
+<div class="site-demo-button" style="margin-top: 20px; margin-bottom: 0;">
+    <button class="layui-btn site-demo-active" data-type="loading">处理上传文件</button>
+    <a href="#" class="layui-btn site-demo-active layui-btn-disabled" id="download" >无法下载文件</a>
+</div>
+<script src="/static/layui/layui.js" charset="utf-8"></script>
+<script src="/static/js/jquery.min.js" charset="utf-8"></script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+    var filePath = "undefined";
+    layui.use('upload', function () {
+        var $ = layui.jquery
+            , upload = layui.upload;
+        //拖拽上传
+        upload.render({
+            elem: '#uploadexcel', url: 'http://127.0.0.1:8083/',
+            accept: 'file', //普通文件
+            data: {},
+            done: function (data) {
+                alert("文件上传完成"); 
+                filePath = data.path;
+                },
+        });
+    });
+    layui.use('element', function () {
+        var $ = layui.jquery
+            , element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+
+        //触发事件
+        var active = {
+            loading: function (othis) {
+                $.ajax({
+                    url: 'http://127.0.0.1:8082/data/apkpi/',
+                    type: 'POST',
+                    data: { "path": filePath },
+                }).done(function (res) {
+                    if(res=="请上传文件"){
+                        othis.removeClass(DISABLED);
+                        alert(res);
+                        filePath = "error";
+                        return;
+                    }
+                    filePath = "undefined";
+                    othis.removeClass(DISABLED);
+                    element.progress('demo', 100 + '%');
+                    $('#download').attr('href', '/static/README.md');
+                    $('#download').attr('download', 'README.md');
+                    $("#download").text('下载生成文件');
+                    $("#download").removeClass(DISABLED);
+                }).fail(function (res) {
+                    alert('处理过程出错！！！');
+                });
+                var DISABLED = 'layui-btn-disabled';
+                if (othis.hasClass(DISABLED)) return;
+                //模拟loading
+                var n = 0, timer = setInterval(function () {
+                    n = n + Math.random() * 10 | 0;
+                    if (n > 60) {
+                        n = 80;
+                        clearInterval(timer);
+                        // othis.removeClass(DISABLED);
+                    }
+                    if(filePath == "error"){
+                        clearInterval(timer);
+                        filePath = "undefined";
+                        n = 0;
+                    }
+                    element.progress('demo', n + '%');
+                }, 300 + Math.random() * 1000);
+
+                othis.addClass(DISABLED);
+            }
+        };
+
+        $('.site-demo-active').on('click', function () {
+            var othis = $(this), type = $(this).data('type');
+            active[type] ? active[type].call(this, othis) : alert("文件处理无法启动！！");
+        });
+    });
+</script>

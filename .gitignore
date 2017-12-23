@@ -1,5 +1,6 @@
 ## .gitignore
-
-# .gitignore for maven
-debug
-lastupdate.tmp
+/debug
+/lastupdate.tmp
+/file-server
+## unignore
+!/file-server\HTTPFileServer.py
