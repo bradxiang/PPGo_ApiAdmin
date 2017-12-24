@@ -1,5 +1,7 @@
 ## .gitignore
-!/file-server\HTTPFileServer.py
+!/static/file-server/HTTPFileServer.py
 /debug
 /lastupdate.tmp
-/file-server
+/static/file-server
+api-admin.exe
+debug
