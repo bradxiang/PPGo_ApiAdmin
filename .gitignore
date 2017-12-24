@@ -1,7 +1,6 @@
 ## .gitignore
-!/static/file-server/HTTPFileServer.py
 /debug
 /lastupdate.tmp
-/static/file-server
+/static/data
 api-admin.exe
 debug
