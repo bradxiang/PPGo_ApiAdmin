@@ -9,7 +9,7 @@
 
 <p id="file"></p>
 
-<div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="demo" style="margin-top: 20px; margin-bottom: 0;">
+<div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="demo" style="margin-top: 20px; margin-bottom: 0;width:40%">
     <div class="layui-progress-bar layui-bg-red" lay-percent="0%"></div>
 </div>
 
@@ -29,7 +29,7 @@
     layui.use('upload', function () {
         var $ = layui.jquery
             , upload = layui.upload;
-        var hostUrl = "http://" + {{.httpserverHost }} + "/";
+        var hostUrl = "http://" + "{{.httpserverHost }}" + "/";
         //拖拽上传
         upload.render({
             elem: '#uploadexcel',
@@ -53,7 +53,7 @@
     layui.use('element', function () {
         var $ = layui.jquery
             , element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
-        var hostUrl = "http://" + {{.pythonapiHost }} + "/data/apkpi/";
+        var hostUrl = "http://" + "{{.pythonapiHost}}" + "/data/apkpi/";
         //触发事件
         var active = {
             loading: function (othis) {
