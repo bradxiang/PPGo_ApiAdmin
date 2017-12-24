@@ -44,6 +44,8 @@ func (self *BaseController) Prepare() {
 	self.Data["curRoute"] = self.controllerName + "." + self.actionName
 	self.Data["curController"] = self.controllerName
 	self.Data["curAction"] = self.actionName
+	self.Data["pythonapiHost"] = beego.AppConfig.String("pythonapihost")
+	self.Data["httpserverHost"] = beego.AppConfig.String("httpserverhost")
 	// noAuth := "ajaxsave/ajaxdel/table/loginin/loginout/getnodes/start"
 	// isNoAuth := strings.Contains(noAuth, self.actionName)
 	// if isNoAuth == false {
