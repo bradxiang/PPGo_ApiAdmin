@@ -1,129 +1,130 @@
-<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
-    <legend>上传xlsx格式的ap-kpi数据</legend>
-</fieldset>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+    <body>
+        <fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
+            <legend>上传xlsx格式的ap-kpi数据</legend>
+        </fieldset>
 
-<div class="layui-upload-drag" id="uploadexcel">
-    <i class="layui-icon"></i>
-    <p>点击上传，或将文件拖拽到此处</p>
-</div>
+        <div class="layui-upload-drag" id="uploadexcel">
+            <i class="layui-icon"></i>
+            <p>点击上传，或将文件拖拽到此处</p>
+        </div>
 
-<p id="file"></p>
+        <p id="file"></p>
 
-<div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="demo" style="margin-top: 20px; margin-bottom: 0;width:40%">
-    <div class="layui-progress-bar layui-bg-red" lay-percent="0%"></div>
-</div>
+        <div class="layui-progress layui-progress-big" lay-showpercent="true" lay-filter="fileHandlerProgress" style="margin-top: 20px; margin-bottom: 0;width:40%">
+            <div class="layui-progress-bar layui-bg-red" lay-percent="0%"></div>
+        </div>
 
-<div class="site-demo-button" style="margin-top: 20px; margin-bottom: 0;">
-    <button class="layui-btn site-demo-active layui-btn-disabled" id="handlefile" data-type="loading">处理上传文件</button>
-    <a href="#" class="layui-btn layui-btn-disabled" id="download" >无法下载文件</a>
-</div>
+        <div style="margin-top: 20px; margin-bottom: 0;">
+            <button class="layui-btn layui-btn-disabled" id="handlefile" data-type="loading">处理上传文件</button>
+            <a href="#" class="layui-btn layui-btn-disabled" id="download" >无法下载文件</a>
+        </div>
 
-<script src="/static/layui/layui.js" charset="utf-8"></script>
-<script src="/static/js/jquery.min.js" charset="utf-8"></script>
-<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
-<script>
-    var filePath = "undefined";
-    var fileResult = true;
-    var progressNum = 0;
-
-    layui.use('upload', function () {
-        var $ = layui.jquery
-            , upload = layui.upload;
-        var hostUrl = "http://" + "{{.httpserverHost }}" + "/";
-        //拖拽上传
-        upload.render({
-            elem: '#uploadexcel',
-            url: hostUrl,
-            accept: 'file', //普通文件
-            data: {},
-            done: function (data) {
-                filePath = data.path;
-                $("#download").addClass('layui-btn-disabled');
-                $('#handlefile').removeClass('layui-btn-disabled');
-                var arrfilePath = filePath.split("\\");
-                $("#file").text('文件名称:'+ arrfilePath[arrfilePath.length-1]);
-                layer.alert('文件上传完成', {
-                    skin: 'layui-layer-molv' //样式类名
-                    , closeBtn: 0
-                    });
-                },
-        });
-    });
-    
-    layui.use('element', function () {
-        var $ = layui.jquery
-            , element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
-        var hostUrl = "http://" + "{{.pythonapiHost}}" + "/data/apkpi/";
-        //触发事件
-        var active = {
-            loading: function (othis) {
-                $.ajax({
-                    url: hostUrl,
-                    type: 'POST',
-                    data: { "path": filePath },
-                }).done(function (res) {
-                    if(res=="error"){
-                        othis.addClass('layui-btn-disabled');
-                        layer.alert('请上传需要处理文件', {
-                            skin: 'layui-layer-molv' //样式类名
+        <script src="/static/layui/layui.js" charset="utf-8"></script>
+        <script src="/static/js/jquery.min.js" charset="utf-8"></script>
+        <!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+        <script>
+            //文件路径
+            var filePath = "undefined";
+            //文件处理结果
+            var fileResult = true;
+            //进度条数值
+            var progressNum = 0;
+            
+            layui.use(['element', 'upload'], function () {
+                var $ = layui.jquery
+                    , upload = layui.upload    //上传功能
+                    , element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+                //拖拽上传
+                upload.render({
+                    elem: '#uploadexcel',
+                    url: "http://" + "{{.httpserverHost }}" + "/",
+                    accept: 'file', //普通文件
+                    done: function (data) {
+                        filePath = data.path;
+                        $("#download").addClass('layui-btn-disabled');
+                        $('#handlefile').removeClass('layui-btn-disabled');
+                        var arrfilePath = filePath.split("\\");
+                        $("#file").text('文件名称:' + arrfilePath[arrfilePath.length - 1]);
+                        layer.alert('文件上传完成', {
+                            skin: 'layui-layer-molv' 
                             , closeBtn: 0
                         });
-                        fileResult = false;
-                        return;
-                    }
-                    fileResult = true;
-                    filePath = "undefined";
-                    progressNum = 100;
-                    element.progress('demo', progressNum + '%');
-                    othis.addClass('layui-btn-disabled');
-                    var tmp = res.split("\\");
-                    var download_name = tmp[1];
-                    $('#download').attr('download', download_name);
-                    $('#download').attr('href', '/static/' + res);
-                    $("#download").text('下载生成文件');
-                    $("#download").removeClass('layui-btn-disabled');
-                    layer.alert('文件处理完成，请下载！', {
-                        skin: 'layui-layer-molv' //样式类名
-                        , closeBtn: 0
-                    });
-                }).fail(function (res) {
-                    progressNum = 0;
-                    filePath = "undefined";
-                    fileResult = false;
-                    othis.addClass('layui-btn-disabled');
-                    element.progress('demo', progressNum + '%');
-                    layer.alert('"文件处理出错！！！\n\r请上传正确需要处理文件！"', {
-                        skin: 'layui-layer-molv' //样式类名
-                        , closeBtn: 0
-                    });
-                    return;
+                    },
                 });
-                if (othis.hasClass('layui-btn-disabled')) return;
-                //模拟loading
-                var timer = setInterval(function () {
-                    if (progressNum == 100) {
-                        clearInterval(timer);
-                        progressNum = 0;
-                    } else {
-                        element.progress('demo', progressNum + '%');
-                    }
-                    progressNum = progressNum + Math.random() * 10 | 0;
-                    if (progressNum > 80) {
-                        clearInterval(timer);
-                        // othis.removeClass(DISABLED);
-                    }
-                    if(fileResult == false){
-                        clearInterval(timer);
-                        filePath = "undefined";
-                    }
-                }, 300 + Math.random() * 1000);
+                //触发事件
+                var active = {
+                    loading: function (othis) {
+                        $.ajax({
+                            url: "http://" + "{{.pythonapiHost}}" + "/data/apkpi/",
+                            type: 'POST',
+                            data: { "path": filePath },
+                        }).done(function (res) {
+                            if(res=="error"){
+                                othis.addClass('layui-btn-disabled');
+                                layer.alert('请上传需要处理文件', {
+                                    skin: 'layui-layer-molv' //样式类名
+                                    , closeBtn: 0
+                                });
+                                fileResult = false;
+                                return;
+                            }
+                            fileResult = true;
+                            filePath = "undefined";
+                            progressNum = 100;
+                            element.progress('fileHandlerProgress', progressNum + '%');
+                            othis.addClass('layui-btn-disabled');
+                            var tmp = res.split("\\");
+                            var download_name = tmp[tmp.length-1];
+                            $('#download').attr('download', download_name);
+                            $('#download').attr('href', '/static/' + res);
+                            $("#download").text('下载生成文件');
+                            $("#download").removeClass('layui-btn-disabled');
+                            layer.alert('文件处理完成，请下载！', {
+                                skin: 'layui-layer-molv' //样式类名
+                                , closeBtn: 0
+                            });
+                        }).fail(function (res) {
+                            progressNum = 0;
+                            filePath = "undefined";
+                            fileResult = false;
+                            othis.addClass('layui-btn-disabled');
+                            element.progress('fileHandlerProgress', progressNum + '%');
+                            layer.alert('"文件处理出错！！！\n\r请上传正确需要处理文件！"', {
+                                skin: 'layui-layer-molv' //样式类名
+                                , closeBtn: 0
+                            });
+                            return;
+                        });
+                        //模拟loading
+                        var timer = setInterval(function () {
+                            if (progressNum == 100) {
+                                clearInterval(timer);
+                                progressNum = 0;
+                            } else {
+                                element.progress('fileHandlerProgress', progressNum + '%');
+                            }
+                            progressNum = progressNum + Math.random() * 10 | 0;
+                            if (progressNum > 80) {
+                                clearInterval(timer);
+                            }
+                            if(fileResult == false){
+                                clearInterval(timer);
+                                filePath = "undefined";
+                                progressNum = 0;
+                                fileResult = true;
+                                element.progress('fileHandlerProgress', progressNum + '%');
+                            }
+                        }, 300 + Math.random() * 1000);
 
-                othis.addClass(DISABLED);
-            }
-        };
-        $('.site-demo-active').on('click', function () {
-            var othis = $(this), type = $(this).data('type');
-            active[type] ? active[type].call(this, othis) : "";
-        });
-    });
-</script>
+                        othis.addClass('layui-btn-disabled');
+                    }
+                };
+                $('#handlefile').on('click', function () {
+                        active[$(this).data('type')].call(this, $(this));
+                    });
+            });
+        </script>
+    </body> 
+</html>

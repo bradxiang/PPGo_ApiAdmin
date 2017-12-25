@@ -1,6 +1,6 @@
 ## .gitignore
 /debug
 /lastupdate.tmp
-/static/data
+/static/data/
 api-admin.exe
 debug
